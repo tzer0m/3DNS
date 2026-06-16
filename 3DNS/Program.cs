@@ -33,6 +33,6 @@ internal class Program
         }
 
         // Run dynamic DNS update
-        DynDNS.Run(logger, domain, apiKey, apiSecret);
+        DynDNS.Run(logger, domain, apiKey, apiSecret, connectionString);
     }
 }
