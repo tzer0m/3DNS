@@ -15,37 +15,12 @@ namespace _3DNS
         /// </summary>
         /// <param name="logger">Logger</param>
         /// <param name="domain">Domain</param>
+        /// <param name="ip">Current public IP address</param>
         /// <param name="apiKey">Api key</param>
         /// <param name="apiSecret">Api secret</param>
         /// <param name="connectionString">Database connection string</param>
-        public static void Run(ILogger logger, string domain, string apiKey, string apiSecret, string connectionString)
+        public static void Run(ILogger logger, string domain, string ip, string apiKey, string apiSecret, string connectionString)
         {
-            // Create HTTP client and request
-            logger.LogInformation("Getting current public IP address");
-            HttpClient ipClient = new();
-
-            // Send request and check for success
-            HttpResponseMessage ipResponse = ipClient.Send(new(HttpMethod.Get, "https://api.ipify.org"));
-            try
-            {
-                ipResponse.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException ex)
-            {
-                logger.LogError(ex, "Failed to get public IP");
-                return;
-            }
-            logger.LogInformation("Public IP retrieved");
-
-            // Read response content
-            string ip = ipResponse.Content.ReadAsStringAsync().Result;
-            if (!IPAddress.TryParse(ip, out _))
-            {
-                logger.LogError("Invalid IP address retrieved: {ip}", ip);
-                return;
-            }
-            logger.LogInformation("Current public IP address: {ip}", ip);
-
             // Create HTTP client and request
             logger.LogInformation("Getting A record for {domain}", domain);
             HttpClient gcGetClient = new();
