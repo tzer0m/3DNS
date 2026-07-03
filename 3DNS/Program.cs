@@ -29,7 +29,7 @@ internal class Program
         AppSettings settings = new();
         configuration.Bind(settings);
 
-        if (string.IsNullOrEmpty(settings.GoDaddy.ApiKey) || string.IsNullOrEmpty(settings.GoDaddy.ApiSecret) || string.IsNullOrEmpty(settings.ConnectionString) || string.IsNullOrEmpty(settings.TingApiKey) || settings.Domains.Count == 0)
+        if (string.IsNullOrEmpty(settings.Cloudflare.ApiToken) || string.IsNullOrEmpty(settings.ConnectionString) || string.IsNullOrEmpty(settings.TingApiKey) || settings.Cloudflare.Domains.Count == 0)
         {
             logger.LogError("Missing required configuration.");
             return;
@@ -59,9 +59,9 @@ internal class Program
 
         // Run dynamic DNS update for each configured domain
         Dictionary<string, Outcome> results = [];
-        foreach (string domain in settings.Domains)
+        foreach (CloudflareDomainSettings domain in settings.Cloudflare.Domains)
         {
-            results[domain] = DynDNS.Run(logger, domain, ip, settings.GoDaddy.ApiKey, settings.GoDaddy.ApiSecret);
+            results[domain.Domain] = DynDNS.Run(logger, domain.Domain, ip, domain.ZoneId, settings.Cloudflare.ApiToken);
         }
 
         // Write a single database record if any domain actually changed
