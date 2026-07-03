@@ -1,0 +1,14 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        run: dotnet publish 3DNS/3DNS.csproj -c Release -o /home/tzer0m/Services/3DNS
